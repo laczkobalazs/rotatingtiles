@@ -10,13 +10,12 @@
 
     <div class="container border" style="width: 600px !important;">
         <div class="row border-success" style="height:400px !important">
-            {% for tile in range(96)  %}
-            <div class="col-1 text-center border" data-tile-number="{{ tile }}">
-
-            </div>
-            {% endfor %}
+        {% block grid %}
+            "hi"
+        {% endblock %}
         </div>
     </div>
+<a href="{{ url_for('start_game') }}">Start Game</a>
 
 </body>
 </html>

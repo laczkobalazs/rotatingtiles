@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+{% block grid %}
+    {% for tile in range(96)  %}
+            <div class="col-1 text-center border" data-tile-number="{{ tile }}">
+
+            </div>
+            {% endfor %}
+{% endblock %}
