@@ -1,4 +1,7 @@
 {% extends "index.html" %}
+{% block head %}
+    <script src="{{ url_for('static', filename='movement.js') }}" defer></script>
+{% endblock %}
 {% block grid %}
     {% for tile in range(96)  %}
             <div class="col-1 text-center border" data-tile-number="{{ tile }}">
