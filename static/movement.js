@@ -1,4 +1,6 @@
-const tiles = document.querySelectorAll('[data-title-number]');
+let tiles = document.querySelectorAll('[data-tile-number]');
+
+let tileArray = [];
 for (tile of tiles){
-    console.log(tile)
+    tileArray.push(tile.dataset.tileNumber)
 }
