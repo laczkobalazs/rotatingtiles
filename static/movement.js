@@ -34,19 +34,19 @@ function onkeyup(event) {
     switch (keyCode) {
         case 87:        // W button, Up player movement
             keyW = moveUp();
-            console.log('W')
+            console.log('W');
             break;
         case 83:        // S button, Down
             keyS = moveDown();
-            console.log('S')
+            console.log('S');
             break;
         case 65:        // A button, Left
             keyA = moveLeft();
-            console.log('A')
+            console.log('A');
             break;
         case 68:        // D button, Right
             keyD = moveRight();
-            console.log('D')
+            console.log('D');
             break;
     }
 }
