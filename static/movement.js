@@ -26,50 +26,61 @@ let replacePlayer = function(tile){
     placePlayer(tile)
 };
 
+function getTileNum(){
+    return parseInt(document.querySelector("#player").parentElement.dataset.tileNumber)
+}
 
-document.addEventListener("keyup", onkeyup)
+
+
+document.addEventListener("keyup", onkeyup);
 
 function onkeyup(event) {
     let keyCode = event.keyCode;
     switch (keyCode) {
         case 87:        // W button, Up player movement
-            keyW = moveUp();
-            console.log('W')
+            moveUp(getTileNum());
+            console.log('W');
             break;
         case 83:        // S button, Down
-            keyS = moveDown();
-            console.log('S')
+            moveDown(getTileNum());
+            console.log('S');
             break;
         case 65:        // A button, Left
-            keyA = moveLeft();
-            console.log('A')
+            moveLeft(getTileNum());
+            console.log('A');
             break;
         case 68:        // D button, Right
-            keyD = moveRight();
-            console.log('D')
+            moveRight(getTileNum());
+            console.log('D');
             break;
     }
 }
 
 function moveUp(tile) {
     if (tile > 12) {
-        replacePlayer(tile) -= 12;
+        tile -= 12;
+        replacePlayer(tile);
     }
 }
 
 function moveDown(tile) {
     if (tile < 84) {
-          replacePlayer(tile) += 12;
+        tile += 12
+          replacePlayer(tile);
     }
 }
 function moveLeft(tile) {
     if (tile % 12 !== 0) {
-         replacePlayer(tile) -= 1;
+        tile -= 1;
+         replacePlayer(tile)
     }
 }
 
 function moveRight(tile) {
     if (tile % 12 !== 11) {
-        replacePlayer(tile) += 1;
+        tile += 1;
+        replacePlayer(tile);
     }
 }
+
+placePlayer(1);
