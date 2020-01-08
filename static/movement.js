@@ -8,16 +8,22 @@ for (tile of tiles){
 }
 
 // create object holder array
+
+let mapLayout = {
+    "4": "exit",
+    "5": "trigger"
+};
+
 let mapObjects = {
-    "4": {"exit": false},
-    "5": {"trigger": true}
+    "exit": {"value": false, "imgcls": "fas fa-dungeon"},
+    "trigger": {"value": true}
 };
 
 
 let objBehavior = {
     "exit": function (value){console.log(value ? "door status true" : "door is false")},
     "trigger": function(value){
-        mapObjects["4"].exit = value;
+        mapObjects.exit.value = value;
         console.log("door is open now");
     }
 };
@@ -69,8 +75,8 @@ function onkeyup(event) {
             break;
     }
     try{
-        let objName = Object.keys(mapObjects[getTileNum()])[0];
-        let value = Object.values(mapObjects[getTileNum()])[0];
+        let objName = mapLayout[getTileNum()];
+        let value = mapObjects[objName].value;
         objBehavior[objName](value);
         //console.log("key, value: ");
         //console.log(objName);
