@@ -10,6 +10,7 @@ for (tile of tiles){
 // create object holder array
 
 let mapLayout = {
+    "0" : "rotater",
     "4": "exit",
     "5": "trigger",
     "25": "forwardtile",
@@ -17,16 +18,24 @@ let mapLayout = {
 };
 
 let mapObjects = {
-    "exit": {"value": false, "imgcls": "fas fa-dungeon"},
-    "trigger": {"value": true, "imgcls": "fas fa-grip-lines"},
-    "forwardtile": {"value": "right", "imgcls": "fas fa-arrow-right"}
+    "exit": {"value": false, "imgcls": "fa-door-closed"},
+    "trigger": {"value": false, "imgcls": "fa-grip-lines"},
+    "forwardtile": {"value": "up", "imgcls": "fa-chevron-up"},
+    "rotater": {"value": true, "imgcls": "fa-redo-alt"}
 };
 
 
 let objBehavior = {
     "exit": function (value){console.log(value ? "door status true" : "door is false")},
     "trigger": function(value){
-        mapObjects.exit.value = value;
+        mapObjects.trigger.value = (!value);
+        mapObjects.exit.value = mapObjects.trigger.value;
+        // solution 1: modifying DOM (working fine)
+            // document.querySelector(".fa-door-closed").classList.add("fa-door-open");
+        // solution 2: toggle class of DOM object in JS code
+            let doorObj = document.querySelector(".fa-door-closed");
+            doorObj.classList.toggle("fa-door-open");
+
         console.log("door is open now");
     },
     "forwardtile": function(direction){
@@ -48,11 +57,23 @@ let objBehavior = {
             replacePlayer(tile);
             checkObjectBehavior()
         }, 200)
+    },
+    "rotater": function(value){
+        console.log("rotater activated");
+        let newDirection = {"right": "down", "down": "left", "left": "up", "up": "right"};
+        let rotaTiles = document.querySelectorAll(`.${mapObjects.forwardtile.imgcls}`);
+        for (nodes of rotaTiles){
+            nodes.classList.remove(mapObjects.forwardtile.imgcls);
+            nodes.classList.add(`fa-chevron-${newDirection[mapObjects.forwardtile.value]}`);
+            //console.log(nodes)
+        }
+        mapObjects.forwardtile.imgcls = `fa-chevron-${newDirection[mapObjects.forwardtile.value]}`;
+        mapObjects.forwardtile.value = newDirection[mapObjects.forwardtile.value]
     }
 };
 // place objects
 function placeObjects(objClass, tileNum){
-    let tagtxt = `<i class="${objClass}"></i>`;
+    let tagtxt = `<i class="fas ${objClass}"></i>`;
     let placement = document.querySelector(`[data-tile-number="${tileNum}"]`);
     placement.insertAdjacentHTML("beforeend", tagtxt);
 }
