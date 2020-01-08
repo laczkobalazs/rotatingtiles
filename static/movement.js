@@ -65,8 +65,8 @@ function moveUp(tile) {
 
 function moveDown(tile) {
     if (tile < 84) {
-        tile += 12
-          replacePlayer(tile);
+        tile += 12;
+        replacePlayer(tile);
     }
 }
 function moveLeft(tile) {
