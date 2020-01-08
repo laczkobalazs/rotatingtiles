@@ -19,7 +19,7 @@ let mapLayout = {
 
 let mapObjects = {
     "exit": {"value": false, "imgcls": "fa-door-closed"},
-    "trigger": {"value": false, "imgcls": "fa-grip-lines"},
+    "trigger": {"value": false, "imgcls": "fa-circle"},
     "forwardtile": {"value": "up", "imgcls": "fa-chevron-up"},
     "rotater": {"value": true, "imgcls": "fa-redo-alt"}
 };
@@ -35,7 +35,9 @@ let objBehavior = {
         // solution 2: toggle class of DOM object in JS code
             let doorObj = document.querySelector(".fa-door-closed");
             doorObj.classList.toggle("fa-door-open");
-
+            let triggerObj = document.querySelector(`[data-tile-number='${getTileNum()}'] > i`);
+            triggerObj.classList.toggle("fa-check-circle");
+            triggerObj.classList.toggle("fa-circle");
         console.log("door is open now");
     },
     "forwardtile": function(direction){
@@ -82,7 +84,7 @@ for (tile in mapLayout){
 }
 
 // player text
-let playerText = `<i id="player" class="fab fa-accessible-icon" style="font-size: 25px"></i>`;
+let playerText = `<i id="player" class="fab fa-accessible-icon fa-2x" ></i>`;
 
 // player placement functions
 function placePlayer(tile){
