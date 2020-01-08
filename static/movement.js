@@ -11,12 +11,15 @@ for (tile of tiles){
 
 let mapLayout = {
     "4": "exit",
-    "5": "trigger"
+    "5": "trigger",
+    "25": "forwardtile",
+    "26": "forwardtile"
 };
 
 let mapObjects = {
     "exit": {"value": false, "imgcls": "fas fa-dungeon"},
-    "trigger": {"value": true, "imgcls": "fas fa-grip-lines"}
+    "trigger": {"value": true, "imgcls": "fas fa-grip-lines"},
+    "forwardtile": {"value": "right", "imgcls": "fas fa-arrow-right"}
 };
 
 
@@ -25,6 +28,26 @@ let objBehavior = {
     "trigger": function(value){
         mapObjects.exit.value = value;
         console.log("door is open now");
+    },
+    "forwardtile": function(direction){
+        let tile = getTileNum();
+        switch(direction){
+            case "right":
+                tile += 1;
+                break;
+            case "left":
+                tile -= 1;
+                break;
+            case "down":
+                tile += 12;
+                break;
+            case "up":
+                tile -= 12;
+        }
+        setTimeout(function(){
+            replacePlayer(tile);
+            checkObjectBehavior()
+        }, 200)
     }
 };
 // place objects
@@ -38,7 +61,7 @@ for (tile in mapLayout){
 }
 
 // player text
-let playerText = `<i id="player" class="fab fa-accessible-icon"></i>`;
+let playerText = `<i id="player" class="fab fa-accessible-icon" style="font-size: 25px"></i>`;
 
 // player placement functions
 function placePlayer(tile){
@@ -83,6 +106,10 @@ function onkeyup(event) {
 
             break;
     }
+    checkObjectBehavior()
+}
+
+function checkObjectBehavior(){
     try{
         let objName = mapLayout[getTileNum()];
         let value = mapObjects[objName].value;
