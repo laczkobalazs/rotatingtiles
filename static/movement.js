@@ -16,7 +16,7 @@ let mapLayout = {
 
 let mapObjects = {
     "exit": {"value": false, "imgcls": "fas fa-dungeon"},
-    "trigger": {"value": true}
+    "trigger": {"value": true, "imgcls": "fas fa-grip-lines"}
 };
 
 
@@ -27,6 +27,15 @@ let objBehavior = {
         console.log("door is open now");
     }
 };
+// place objects
+function placeObjects(objClass, tileNum){
+    let tagtxt = `<i class="${objClass}"></i>`;
+    let placement = document.querySelector(`[data-tile-number="${tileNum}"]`);
+    placement.insertAdjacentHTML("beforeend", tagtxt);
+}
+for (tile in mapLayout){
+    placeObjects(mapObjects[mapLayout[tile]].imgcls, tile)
+}
 
 // player text
 let playerText = `<i id="player" class="fab fa-accessible-icon"></i>`;
