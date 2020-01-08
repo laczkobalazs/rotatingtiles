@@ -7,6 +7,21 @@ for (tile of tiles){
     tileArray.push(tile.dataset.tileNumber)
 }
 
+// create object holder array
+let mapObjects = {
+    "4": {"exit": false},
+    "5": {"trigger": true}
+};
+
+
+let objBehavior = {
+    "exit": function (value){console.log(value ? "door status true" : "door is false")},
+    "trigger": function(value){
+        mapObjects["4"].exit = value;
+        console.log("door is open now");
+    }
+};
+
 // player text
 let playerText = `<i id="player" class="fab fa-accessible-icon"></i>`;
 
@@ -35,25 +50,32 @@ function getTileNum(){
 document.addEventListener("keyup", onkeyup);
 
 function onkeyup(event) {
-    let keyCode = event.keyCode;
-    switch (keyCode) {
+    switch (event.keyCode) {
         case 87:        // W button, Up player movement
             moveUp(getTileNum());
-            console.log('W');
+
             break;
         case 83:        // S button, Down
             moveDown(getTileNum());
-            console.log('S');
+
             break;
         case 65:        // A button, Left
             moveLeft(getTileNum());
-            console.log('A');
+
             break;
         case 68:        // D button, Right
             moveRight(getTileNum());
-            console.log('D');
+
             break;
     }
+    try{
+        let objName = Object.keys(mapObjects[getTileNum()])[0];
+        let value = Object.values(mapObjects[getTileNum()])[0];
+        objBehavior[objName](value);
+        //console.log("key, value: ");
+        //console.log(objName);
+        //console.log(value);
+    } catch {}
 }
 
 function moveUp(tile) {
