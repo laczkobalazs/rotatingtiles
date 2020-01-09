@@ -10,13 +10,26 @@ for (tile of tiles){
 // create object holder array
 
 let mapLayout = {
-    "3" : "rotater",
-    "4": "exit",
-    "5": "trigger",
-    "25": "uptile",
-    "26": "uptile",
-    "27": "righttile"
+    "16": "righttile",
+    "28": "lefttile",
+    "19": "righttile",
+    "13": "exit",
+    "54": "rotater",
+    "58": "rotater",
+    "56": "trigger"
 };
+
+let levelOneLayout = {
+    "16": "lefttile",
+    "28": "lefttile",
+    "19": "righttile",
+    "13": "exit",
+    "54": "rotater",
+    "58": "rotater",
+    "56": "trigger"
+
+};
+let levelOneRoadLayout = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30, 32, 33, 34, 37, 38, 39, 41, 42, 44, 45, 46, 49, 50, 51, 53, 54, 56, 57, 58, ];
 
 let roadLayout = [0, 1, 2, 3, 4, 5, 14, 15, 25, 26, 27, 28];
 
@@ -28,12 +41,20 @@ let mapObjects = {
     "righttile": {"value": "right", "imgcls": "fa-chevron-right"},
     "lefttile": {"value": "left", "imgcls": "fa-chevron-left"},
     "downtile": {"value": "down", "imgcls": "fa-chevron-down"},
-    "road": {"value": true, "imgcls": {"background" : "coral"}}
+    "road": {"value": true, "imgcls": {"background" : "coral"}},
+    "fixUpTile": {"value": "fixUp", "imgcls": "fa-long-arrow-alt-up"},
+    "fixRightTile": {"value": "fixRight", "imgcls": "fa-long-arrow-alt-right"},
+    "fixDownTile": {"value": "fixDown", "imgcls": "fa-long-arrow-alt-down"},
+    "fixLeftTile": {"value": "fixLeft", "imgcls": "falet tile;-long-arrow-alt-left"},
 };
 
 
 let objBehavior = {
-    "exit": function (value){console.log(value ? "door status true" : "door is false")},
+    "exit": function (value){
+        if (value){
+            levelProgress()
+            }
+        },
     "trigger": function(value){
         mapObjects.trigger.value = (!value);
         mapObjects.exit.value = mapObjects.trigger.value;
@@ -51,6 +72,10 @@ let objBehavior = {
     "lefttile": function(direction){placePlayerByTile(direction)},
     "downtile": function(direction){placePlayerByTile(direction)},
     "uptile": function(direction){placePlayerByTile(direction)},
+    "fixUpTile": function(direction){placePlayerByTile(direction)},
+    "fixRightTile": function(direction){placePlayerByTile(direction)},
+    "fixDownTile": function(direction){placePlayerByTile(direction)},
+    "fixLeftTile": function(direction){placePlayerByTile(direction)},
     "rotater": function(value){
         console.log("rotater activated");
         let newDirection = {"right": "down", "down": "left", "left": "up", "up": "right"};
@@ -74,6 +99,7 @@ let objBehavior = {
                     node.classList.remove(`${selectorObj.imgcls}`);
                     node.classList.add(`fa-chevron-${newDirection[rou]}`);
                     mapLayout[node.parentElement.dataset.tileNumber] = `${newDirection[rou]}tile`;
+                    //levelOneLayout[node.parentElement.dataset.tileNumber] = `${newDirection[rou]}tile`;
                     console.log(mapLayout);
 
                 }
@@ -106,7 +132,13 @@ function placeRoad(array){
 for (tile in mapLayout){
     placeObjects(mapObjects[mapLayout[tile]].imgcls, tile)
 }
-placeRoad(roadLayout);
+//for (tile in levelOneLayout){
+//    placeObjects(mapObjects[levelOneLayout[tile]].imgcls, tile)
+//}
+
+
+//placeRoad(roadLayout);
+placeRoad(levelOneRoadLayout);
 
 // player text
 let playerText = `<i id="player" class="fab fa-accessible-icon fa-2x" ></i>`;
@@ -151,20 +183,23 @@ function onkeyup(event) {
     let tile;
     switch (event.keyCode) {
         case 87:        // W button, Up player movement
+        case 38:
             tile = moveUp(getTileNum());
 
             break;
         case 83:        // S button, Down
+        case 40:
             tile = moveDown(getTileNum());
 
             break;
         case 65:        // A button, Left
+        case 37:
             tile = moveLeft(getTileNum());
 
             break;
         case 68:        // D button, Right
+        case 39:
             tile = moveRight(getTileNum());
-
             break;
     }
     if (tile){
@@ -178,6 +213,7 @@ function onkeyup(event) {
 function checkObjectBehavior(){
     try{
         let objName = mapLayout[getTileNum()];
+        //let objName = levelOneRoadLayout[getTileNum()];
         let value = mapObjects[objName].value;
         objBehavior[objName](value);
         //console.log("key, value: ");
@@ -219,15 +255,19 @@ function placePlayerByTile(direction){
     let tile = getTileNum();
         switch(direction){
             case "right":
+            case "fixRight":
                 tile += 1;
                 break;
             case "left":
+            case "fixLeft":
                 tile -= 1;
                 break;
             case "down":
+            case "fixDown":
                 tile += 12;
                 break;
             case "up":
+            case "fixUp":
                 tile -= 12;
         }
         setTimeout(function(){
@@ -235,12 +275,14 @@ function placePlayerByTile(direction){
             checkObjectBehavior()
         }, 200)
 }
-placePlayer(1);
-placeFinishTile(10);
+placePlayer(49);
+//placeFinishTile(10);
 
 function checkWinLevel() {
-    if (getTileNum() === getTileNumObject('#finish')){
+    if (mapObjects.exit.value) {
+        if (getTileNum() === getTileNumObject()){
         levelProgress();
+        }
     }
 }
 
