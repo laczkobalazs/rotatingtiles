@@ -10,14 +10,15 @@ for (tile of tiles){
 // create object holder array
 
 let mapLayout = {
-    "0" : "rotater",
+    "3" : "rotater",
     "4": "exit",
     "5": "trigger",
     "25": "uptile",
     "26": "uptile",
-    "27": "righttile",
-    "2": "road"
+    "27": "righttile"
 };
+
+let roadLayout = [0, 1, 2, 3, 4, 5, 14, 15, 25, 26, 27, 28];
 
 let mapObjects = {
     "exit": {"value": false, "imgcls": "fa-door-closed"},
@@ -86,7 +87,7 @@ let objBehavior = {
 // place objects
 function placeObjects(objClass, tileNum){
     let placement = document.querySelector(`[data-tile-number="${tileNum}"]`);
-    if (typeof(objClass) == "object"){
+    if (typeof(objClass) == "object"){ // not used, placeRoad is the road placing funtion
         if (objClass.background) {
           placement.setAttribute("style", `background:${objClass.background}`)
         }
@@ -95,9 +96,17 @@ function placeObjects(objClass, tileNum){
     placement.insertAdjacentHTML("beforeend", tagtxt);
     }
 }
+
+function placeRoad(array){
+    for (let num of array){
+        let placement = document.querySelector(`[data-tile-number="${num}"]`);
+        placement.setAttribute("style", `background:${mapObjects.road.imgcls.background}`)
+    }
+}
 for (tile in mapLayout){
     placeObjects(mapObjects[mapLayout[tile]].imgcls, tile)
 }
+placeRoad(roadLayout);
 
 // player text
 let playerText = `<i id="player" class="fab fa-accessible-icon fa-2x" ></i>`;
@@ -161,7 +170,7 @@ function onkeyup(event) {
     if (tile){
         if (allowedToStep(tile)){
            replacePlayer(tile);
-            checkObjectBehavior()
+           checkObjectBehavior()
         }
     }
 }
