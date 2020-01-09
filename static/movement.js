@@ -16,7 +16,7 @@ let mapLayout = {
     "25": "uptile",
     "26": "uptile",
     "27": "righttile",
-    "28": "road"
+    "2": "road"
 };
 
 let mapObjects = {
@@ -139,25 +139,31 @@ function getTileNumObject(object){
 document.addEventListener("keyup", onkeyup);
 
 function onkeyup(event) {
+    let tile;
     switch (event.keyCode) {
         case 87:        // W button, Up player movement
-            moveUp(getTileNum());
+            tile = moveUp(getTileNum());
 
             break;
         case 83:        // S button, Down
-            moveDown(getTileNum());
+            tile = moveDown(getTileNum());
 
             break;
         case 65:        // A button, Left
-            moveLeft(getTileNum());
+            tile = moveLeft(getTileNum());
 
             break;
         case 68:        // D button, Right
-            moveRight(getTileNum());
+            tile = moveRight(getTileNum());
 
             break;
     }
-    checkObjectBehavior()
+    if (tile){
+        if (allowedToStep(tile)){
+           replacePlayer(tile);
+            checkObjectBehavior()
+        }
+    }
 }
 
 function checkObjectBehavior(){
@@ -174,29 +180,27 @@ function checkObjectBehavior(){
 function moveUp(tile) {
     if (tile > 11) {
         tile -= 12;
-        replacePlayer(tile);
+        return tile;
     }
 }
 
 function moveDown(tile) {
     if (tile < 84) {
         tile += 12;
-        replacePlayer(tile);
+        return tile;
     }
 }
 function moveLeft(tile) {
     if (tile % 12 !== 0) {
         tile -= 1;
-         replacePlayer(tile)
+         return tile
     }
 }
 
 function moveRight(tile) {
     if (tile % 12 !== 11) {
         tile += 1;
-        replacePlayer(tile);
-        getTileNumObject("#finish");
-        checkWinLevel();
+        return tile
     }
 }
 
@@ -237,6 +241,11 @@ function levelProgress() {
     } else {
         console.log("restart current level")
     }
+}
+
+function allowedToStep(tile){
+    let placement = document.querySelector(`[data-tile-number="${tile}"]`);
+    return (placement.style.backgroundColor === mapObjects.road.imgcls.background)
 }
 
 getTileNumObject("#finish");
