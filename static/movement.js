@@ -15,7 +15,8 @@ let mapLayout = {
     "5": "trigger",
     "25": "uptile",
     "26": "uptile",
-    "27": "righttile"
+    "27": "righttile",
+    "28": "road"
 };
 
 let mapObjects = {
@@ -26,6 +27,7 @@ let mapObjects = {
     "righttile": {"value": "right", "imgcls": "fa-chevron-right"},
     "lefttile": {"value": "left", "imgcls": "fa-chevron-left"},
     "downtile": {"value": "down", "imgcls": "fa-chevron-down"},
+    "road": {"value": true, "imgcls": {"background" : "coral"}}
 };
 
 
@@ -83,9 +85,15 @@ let objBehavior = {
 };
 // place objects
 function placeObjects(objClass, tileNum){
-    let tagtxt = `<i class="fas ${objClass}"></i>`;
     let placement = document.querySelector(`[data-tile-number="${tileNum}"]`);
+    if (typeof(objClass) == "object"){
+        if (objClass.background) {
+          placement.setAttribute("style", `background:${objClass.background}`)
+        }
+    } else {
+    let tagtxt = `<i class="fas ${objClass}"></i>`;
     placement.insertAdjacentHTML("beforeend", tagtxt);
+    }
 }
 for (tile in mapLayout){
     placeObjects(mapObjects[mapLayout[tile]].imgcls, tile)
