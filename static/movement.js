@@ -51,9 +51,7 @@ let mapObjects = {
 
 let objBehavior = {
     "exit": function (value){
-        if (value){
-            levelProgress()
-            }
+        if (value){levelProgress()}
         },
     "trigger": function(value){
         mapObjects.trigger.value = (!value);
@@ -172,10 +170,6 @@ function getTileNum(){
     return parseInt(document.querySelector("#player").parentElement.dataset.tileNumber)
 }
 
-function getTileNumObject(object){
-    return parseInt(document.querySelector(object).parentElement.dataset.tileNumber)
-}
-
 
 document.addEventListener("keyup", onkeyup);
 
@@ -278,13 +272,6 @@ function placePlayerByTile(direction){
 placePlayer(49);
 //placeFinishTile(10);
 
-function checkWinLevel() {
-    if (mapObjects.exit.value) {
-        if (getTileNum() === getTileNumObject()){
-        levelProgress();
-        }
-    }
-}
 
 function levelProgress() {
     if (confirm("Ready to progress to the next level?")) {
@@ -298,6 +285,3 @@ function allowedToStep(tile){
     let placement = document.querySelector(`[data-tile-number="${tile}"]`);
     return (placement.style.backgroundColor === mapObjects.road.imgcls.background)
 }
-
-getTileNumObject("#finish");
-checkWinLevel();
