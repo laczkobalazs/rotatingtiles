@@ -7,7 +7,44 @@ for (tile of tiles){
     tileArray.push(tile.dataset.tileNumber)
 }
 
+// player text
+let playerText = `<i id="player" class="fab fa-accessible-icon fa-2x" ></i>`;
+
 // create object holder array
+let mapLayoutLevel2 = {
+    "85": "fixRightTile",
+    "86": "fixRightTile",
+    "87": "fixRightTile",
+    "88": "fixRightTile",
+    "65": "fixRightTile",
+    "66": "fixRightTile",
+    "67": "fixRightTile",
+    "68": "fixUpTile",
+    "45": "fixRightTile",
+    "76": "fixUpTile",
+    "52": "fixUpTile",
+    "56": "fixUpTile",
+    "46": "fixUpTile",
+    "34": "fixUpTile",
+    "22": "fixUpTile",
+    "30": "fixLeftTile",
+    "31": "fixLeftTile",
+    "32": "fixLeftTile",
+    "40": "fixLeftTile",
+    "39": "fixLeftTile",
+    "37": "fixLeftTile",
+    "36": "fixLeftTile",
+    "48": "fixLeftTile",
+    "60": "fixLeftTile",
+    "72": "fixLeftTile",
+    "28": "fixDownTile",
+    "26": "rotater",
+    "17": "rotater",
+    "64": "uptile",
+    "44": "uptile",
+    "10": "exit",
+};
+
 
 let mapLayout = {
     "16": "righttile",
@@ -30,8 +67,8 @@ let levelOneLayout = {
 
 };
 let levelOneRoadLayout = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 25, 26, 27, 28, 29, 30, 32, 33, 34, 37, 38, 39, 41, 42, 44, 45, 46, 49, 50, 51, 53, 54, 56, 57, 58, ];
-
-let roadLayout = [0, 1, 2, 3, 4, 5, 14, 15, 25, 26, 27, 28];
+let levelTwoRoadLayout = [10, 17, 22, 26, 28, 29, 30, 31, 32, 34, 36, 37, 38, 39, 40, 44, 45, 46, 48, 52, 56, 60, 64, 65, 66, 67, 68, 72, 76, 84, 85, 86, 87, 88];
+let roadLayout = [];
 
 let mapObjects = {
     "exit": {"value": false, "imgcls": "fa-door-closed"},
@@ -127,19 +164,23 @@ function placeRoad(array){
         placement.setAttribute("style", `background:${mapObjects.road.imgcls.background}`)
     }
 }
-for (tile in mapLayout){
-    placeObjects(mapObjects[mapLayout[tile]].imgcls, tile)
-}
-//for (tile in levelOneLayout){
-//    placeObjects(mapObjects[levelOneLayout[tile]].imgcls, tile)
-//}
-
-
-//placeRoad(roadLayout);
-placeRoad(levelOneRoadLayout);
-
-// player text
-let playerText = `<i id="player" class="fab fa-accessible-icon fa-2x" ></i>`;
+let paintMap = function(){
+    if (sessionStorage.getItem("level") === "2"){
+        levelOneRoadLayout = [];
+        Array.prototype.push.apply(levelOneRoadLayout, levelTwoRoadLayout);
+        console.log(levelOneRoadLayout);
+        mapLayout = {};
+        console.log(mapLayout);
+        mapLayout = Object.assign(mapLayout, mapLayoutLevel2);
+        placePlayer(84)
+    } else {
+        placePlayer(49);
+    }
+    for (tile in mapLayout) {
+        placeObjects(mapObjects[mapLayout[tile]].imgcls, tile)
+    }
+    placeRoad(levelOneRoadLayout);
+    };
 
 //finish tile
 let finishTileText = '<i id="finish" class="fas fa-dungeon"></i>';
@@ -169,9 +210,6 @@ let replacePlayer = function(tile){
 function getTileNum(){
     return parseInt(document.querySelector("#player").parentElement.dataset.tileNumber)
 }
-
-
-document.addEventListener("keyup", onkeyup);
 
 function onkeyup(event) {
     let tile;
@@ -229,6 +267,7 @@ function moveDown(tile) {
         return tile;
     }
 }
+
 function moveLeft(tile) {
     if (tile % 12 !== 0) {
         tile -= 1;
@@ -242,7 +281,6 @@ function moveRight(tile) {
         return tile
     }
 }
-
 
 // function for player forwarding tiles
 function placePlayerByTile(direction){
@@ -269,66 +307,21 @@ function placePlayerByTile(direction){
             checkObjectBehavior()
         }, 200)
 }
-placePlayer(49);
-//placeFinishTile(10);
-
 
 function levelProgress() {
     if (confirm("Ready to progress to the next level?")) {
         sessionStorage.setItem("level", "2");
-
-        if (sessionStorage.getItem("level") === "2"){
-            levelOneRoadLayout = [];
-            placeRoad(levelOneRoadLayout);
-            let mapLayout = {
-                "85": "fixRightTile",
-                "86": "fixRightTile",
-                "87": "fixRightTile",
-                "88": "fixRightTile",
-                "65": "fixRightTile",
-                "66": "fixRightTile",
-                "67": "fixRightTile",
-                "68": "fixUpTile",
-                "45": "fixRightTile",
-                "76": "fixUpTile",
-                "52": "fixUpTile",
-                "56": "fixUpTile",
-                "46": "fixUpTile",
-                "34": "fixUpTile",
-                "22": "fixUpTile",
-                "30": "fixLeftTile",
-                "31": "fixLeftTile",
-                "32": "fixLeftTile",
-                "40": "fixLeftTile",
-                "39": "fixLeftTile",
-                "37": "fixLeftTile",
-                "36": "fixLeftTile",
-                "48": "fixLeftTile",
-                "60": "fixLeftTile",
-                "72": "fixLeftTile",
-                "28": "fixDownTile",
-                "26": "rotater",
-                "17": "rotater",
-                "64": "uptile",
-                "44": "uptile",
-                "10": "exit",
-            };
-            let levelOneRoadLayout = [10, 17, 22, 26, 28, 29, 30, 31, 32, 34, 36, 37, 38, 39, 40, 44, 45, 46, 48, 52, 56, 60, 64, 65, 66, 67, 68, 72, 76, 84, 85, 86, 87, 88];
-            placeRoad(levelOneRoadLayout);
-            placePlayer(84);
-            for (tile in mapLayout) {
-                placeObjects(mapObjects[mapLayout[tile]].imgcls, tile)
-            }
-        }
-
+        location.reload();
         console.log("new map")// load new map
     } else {
         console.log("restart current level")
     }
 }
 
-
 function allowedToStep(tile){
     let placement = document.querySelector(`[data-tile-number="${tile}"]`);
     return (placement.style.backgroundColor === mapObjects.road.imgcls.background)
 }
+
+document.addEventListener("keyup", onkeyup);
+paintMap();
