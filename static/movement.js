@@ -10,49 +10,80 @@ for (tile of tiles){
 // create object holder array
 
 let mapLayout = {
+    "0" : "rotater",
     "4": "exit",
     "5": "trigger",
-    "25": "forwardtile",
-    "26": "forwardtile"
+    "25": "uptile",
+    "26": "uptile",
+    "27": "righttile"
 };
 
 let mapObjects = {
-    "exit": {"value": false, "imgcls": "fas fa-dungeon"},
-    "trigger": {"value": true, "imgcls": "fas fa-grip-lines"},
-    "forwardtile": {"value": "right", "imgcls": "fas fa-arrow-right"}
+    "exit": {"value": false, "imgcls": "fa-door-closed"},
+    "trigger": {"value": false, "imgcls": "fa-circle"},
+    "uptile": {"value": "up", "imgcls": "fa-chevron-up"},
+    "rotater": {"value": true, "imgcls": "fa-redo-alt"},
+    "righttile": {"value": "right", "imgcls": "fa-chevron-right"},
+    "lefttile": {"value": "left", "imgcls": "fa-chevron-left"},
+    "downtile": {"value": "down", "imgcls": "fa-chevron-down"},
 };
 
 
 let objBehavior = {
     "exit": function (value){console.log(value ? "door status true" : "door is false")},
     "trigger": function(value){
-        mapObjects.exit.value = value;
+        mapObjects.trigger.value = (!value);
+        mapObjects.exit.value = mapObjects.trigger.value;
+        // solution 1: modifying DOM (working fine)
+            // document.querySelector(".fa-door-closed").classList.add("fa-door-open");
+        // solution 2: toggle class of DOM object in JS code
+            let doorObj = document.querySelector(".fa-door-closed");
+            doorObj.classList.toggle("fa-door-open");
+            let triggerObj = document.querySelector(`[data-tile-number='${getTileNum()}'] > i`);
+            triggerObj.classList.toggle("fa-check-circle");
+            triggerObj.classList.toggle("fa-circle");
         console.log("door is open now");
     },
-    "forwardtile": function(direction){
-        let tile = getTileNum();
-        switch(direction){
-            case "right":
-                tile += 1;
-                break;
-            case "left":
-                tile -= 1;
-                break;
-            case "down":
-                tile += 12;
-                break;
-            case "up":
-                tile -= 12;
+    "righttile": function(direction){placePlayerByTile(direction)},
+    "lefttile": function(direction){placePlayerByTile(direction)},
+    "downtile": function(direction){placePlayerByTile(direction)},
+    "uptile": function(direction){placePlayerByTile(direction)},
+    "rotater": function(value){
+        console.log("rotater activated");
+        let newDirection = {"right": "down", "down": "left", "left": "up", "up": "right"};
+        let rotaTiles = [];
+        for(route in newDirection){
+            let selectorObj = mapObjects[`${route}tile`];
+            let selectedObj = document.querySelectorAll(`.${selectorObj.imgcls}`);
+            let tempDic = {};
+            tempDic[route] = selectedObj;
+            if (selectedObj.length > 0){
+                rotaTiles.push(tempDic)
+            }
+
         }
-        setTimeout(function(){
-            replacePlayer(tile);
-            checkObjectBehavior()
-        }, 200)
+        for (objectContainer of rotaTiles){
+
+            for (rou in objectContainer){
+                selectorObj = mapObjects[`${rou}tile`];
+                for (let node of objectContainer[rou]){
+                    console.log(node);
+                    node.classList.remove(`${selectorObj.imgcls}`);
+                    node.classList.add(`fa-chevron-${newDirection[rou]}`);
+                    mapLayout[node.parentElement.dataset.tileNumber] = `${newDirection[rou]}tile`;
+                    console.log(mapLayout);
+
+                }
+            }
+        }
+        // below lines are not necessary anymore as there are not only one "forwardtile"
+        //selectorObj.imgcls = `fa-chevron-${newDirection[selectorObj.value]}`;
+        //selectorObj.value = newDirection[selectorObj.value]
     }
 };
 // place objects
 function placeObjects(objClass, tileNum){
-    let tagtxt = `<i class="${objClass}"></i>`;
+    let tagtxt = `<i class="fas ${objClass}"></i>`;
     let placement = document.querySelector(`[data-tile-number="${tileNum}"]`);
     placement.insertAdjacentHTML("beforeend", tagtxt);
 }
@@ -61,7 +92,7 @@ for (tile in mapLayout){
 }
 
 // player text
-let playerText = `<i id="player" class="fab fa-accessible-icon" style="font-size: 25px"></i>`;
+let playerText = `<i id="player" class="fab fa-accessible-icon fa-2x" ></i>`;
 
 //finish tile
 let finishTileText = '<i id="finish" class="fas fa-dungeon"></i>';
@@ -161,6 +192,28 @@ function moveRight(tile) {
     }
 }
 
+
+// function for player forwarding tiles
+function placePlayerByTile(direction){
+    let tile = getTileNum();
+        switch(direction){
+            case "right":
+                tile += 1;
+                break;
+            case "left":
+                tile -= 1;
+                break;
+            case "down":
+                tile += 12;
+                break;
+            case "up":
+                tile -= 12;
+        }
+        setTimeout(function(){
+            replacePlayer(tile);
+            checkObjectBehavior()
+        }, 200)
+}
 placePlayer(1);
 placeFinishTile(10);
 
