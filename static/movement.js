@@ -324,6 +324,7 @@ function levelProgress() {
                 "17": "rotater",
                 "64": "uptile",
                 "44": "uptile",
+                "10": "exit",
             };
             let levelOneRoadLayout = [10, 17, 22, 26, 28, 29, 30, 31, 32, 34, 36, 37, 38, 39, 40, 44, 45, 46, 48, 52, 56, 60, 64, 65, 66, 67, 68, 72, 76, 84, 85, 86, 87, 88];
             placeRoad(levelOneRoadLayout);
