@@ -63,6 +63,15 @@ for (tile in mapLayout){
 // player text
 let playerText = `<i id="player" class="fab fa-accessible-icon" style="font-size: 25px"></i>`;
 
+//finish tile
+let finishTileText = '<i id="finish" class="fas fa-dungeon"></i>';
+
+//set finish tile
+function placeFinishTile(tile) {
+    let exitPosition = document.querySelector(`[data-tile-number="${tile}"]`);
+    exitPosition.insertAdjacentHTML("beforeend", finishTileText);
+}
+
 // player placement functions
 function placePlayer(tile){
     let placement = document.querySelector(`[data-tile-number="${tile}"]`);
@@ -83,6 +92,9 @@ function getTileNum(){
     return parseInt(document.querySelector("#player").parentElement.dataset.tileNumber)
 }
 
+function getTileNumObject(object){
+    return parseInt(document.querySelector(object).parentElement.dataset.tileNumber)
+}
 
 
 document.addEventListener("keyup", onkeyup);
@@ -121,7 +133,7 @@ function checkObjectBehavior(){
 }
 
 function moveUp(tile) {
-    if (tile > 12) {
+    if (tile > 11) {
         tile -= 12;
         replacePlayer(tile);
     }
@@ -144,7 +156,27 @@ function moveRight(tile) {
     if (tile % 12 !== 11) {
         tile += 1;
         replacePlayer(tile);
+        getTileNumObject("#finish");
+        checkWinLevel();
     }
 }
 
 placePlayer(1);
+placeFinishTile(10);
+
+function checkWinLevel() {
+    if (getTileNum() === getTileNumObject('#finish')){
+        levelProgress();
+    }
+}
+
+function levelProgress() {
+    if (confirm("Ready to progress to the next level?")) {
+        console.log("new map")// load new map
+    } else {
+        console.log("restart current level")
+    }
+}
+
+getTileNumObject("#finish");
+checkWinLevel();
