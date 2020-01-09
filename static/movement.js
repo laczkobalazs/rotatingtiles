@@ -288,16 +288,63 @@ function checkWinLevel() {
 
 function levelProgress() {
     if (confirm("Ready to progress to the next level?")) {
+        sessionStorage.setItem("level", "2");
+
+        if (sessionStorage.getItem("level") === "2"){
+            levelOneRoadLayout = [];
+            placeRoad(levelOneRoadLayout);
+            let mapLayout = {
+                "85": "fixRightTile",
+                "86": "fixRightTile",
+                "87": "fixRightTile",
+                "88": "fixRightTile",
+                "65": "fixRightTile",
+                "66": "fixRightTile",
+                "67": "fixRightTile",
+                "68": "fixUpTile",
+                "45": "fixRightTile",
+                "76": "fixUpTile",
+                "52": "fixUpTile",
+                "56": "fixUpTile",
+                "46": "fixUpTile",
+                "34": "fixUpTile",
+                "22": "fixUpTile",
+                "30": "fixLeftTile",
+                "31": "fixLeftTile",
+                "32": "fixLeftTile",
+                "40": "fixLeftTile",
+                "39": "fixLeftTile",
+                "37": "fixLeftTile",
+                "36": "fixLeftTile",
+                "48": "fixLeftTile",
+                "60": "fixLeftTile",
+                "72": "fixLeftTile",
+                "28": "fixDownTile",
+                "26": "rotater",
+                "17": "rotater",
+                "64": "uptile",
+                "44": "uptile",
+            };
+            let levelOneRoadLayout = [10, 17, 22, 26, 28, 29, 30, 31, 32, 34, 36, 37, 38, 39, 40, 44, 45, 46, 48, 52, 56, 60, 64, 65, 66, 67, 68, 72, 76, 84, 85, 86, 87, 88];
+            placeRoad(levelOneRoadLayout);
+            placePlayer(84);
+            for (tile in mapLayout) {
+                placeObjects(mapObjects[mapLayout[tile]].imgcls, tile)
+            }
+        }
+
         console.log("new map")// load new map
     } else {
         console.log("restart current level")
     }
 }
 
+
 function allowedToStep(tile){
     let placement = document.querySelector(`[data-tile-number="${tile}"]`);
     return (placement.style.backgroundColor === mapObjects.road.imgcls.background)
 }
 
-getTileNumObject("#finish");
+getTileNumObject("#exit");
 checkWinLevel();
+
