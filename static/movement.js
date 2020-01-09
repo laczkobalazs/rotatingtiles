@@ -13,15 +13,19 @@ let mapLayout = {
     "0" : "rotater",
     "4": "exit",
     "5": "trigger",
-    "25": "forwardtile",
-    "26": "forwardtile"
+    "25": "uptile",
+    "26": "uptile",
+    "27": "righttile"
 };
 
 let mapObjects = {
     "exit": {"value": false, "imgcls": "fa-door-closed"},
     "trigger": {"value": false, "imgcls": "fa-circle"},
-    "forwardtile": {"value": "up", "imgcls": "fa-chevron-up"},
-    "rotater": {"value": true, "imgcls": "fa-redo-alt"}
+    "uptile": {"value": "up", "imgcls": "fa-chevron-up"},
+    "rotater": {"value": true, "imgcls": "fa-redo-alt"},
+    "righttile": {"value": "right", "imgcls": "fa-chevron-right"},
+    "lefttile": {"value": "left", "imgcls": "fa-chevron-left"},
+    "downtile": {"value": "down", "imgcls": "fa-chevron-down"},
 };
 
 
@@ -40,37 +44,41 @@ let objBehavior = {
             triggerObj.classList.toggle("fa-circle");
         console.log("door is open now");
     },
-    "forwardtile": function(direction){
-        let tile = getTileNum();
-        switch(direction){
-            case "right":
-                tile += 1;
-                break;
-            case "left":
-                tile -= 1;
-                break;
-            case "down":
-                tile += 12;
-                break;
-            case "up":
-                tile -= 12;
-        }
-        setTimeout(function(){
-            replacePlayer(tile);
-            checkObjectBehavior()
-        }, 200)
-    },
+    "righttile": function(direction){placePlayerByTile(direction)},
+    "lefttile": function(direction){placePlayerByTile(direction)},
+    "downtile": function(direction){placePlayerByTile(direction)},
+    "uptile": function(direction){placePlayerByTile(direction)},
     "rotater": function(value){
         console.log("rotater activated");
         let newDirection = {"right": "down", "down": "left", "left": "up", "up": "right"};
-        let rotaTiles = document.querySelectorAll(`.${mapObjects.forwardtile.imgcls}`);
-        for (nodes of rotaTiles){
-            nodes.classList.remove(mapObjects.forwardtile.imgcls);
-            nodes.classList.add(`fa-chevron-${newDirection[mapObjects.forwardtile.value]}`);
-            //console.log(nodes)
+        let rotaTiles = [];
+        for(route in newDirection){
+            let selectorObj = mapObjects[`${route}tile`];
+            let selectedObj = document.querySelectorAll(`.${selectorObj.imgcls}`);
+            let tempDic = {};
+            tempDic[route] = selectedObj;
+            if (selectedObj.length > 0){
+                rotaTiles.push(tempDic)
+            }
+
         }
-        mapObjects.forwardtile.imgcls = `fa-chevron-${newDirection[mapObjects.forwardtile.value]}`;
-        mapObjects.forwardtile.value = newDirection[mapObjects.forwardtile.value]
+        for (objectContainer of rotaTiles){
+
+            for (rou in objectContainer){
+                selectorObj = mapObjects[`${rou}tile`];
+                for (let node of objectContainer[rou]){
+                    console.log(node);
+                    node.classList.remove(`${selectorObj.imgcls}`);
+                    node.classList.add(`fa-chevron-${newDirection[rou]}`);
+                    mapLayout[node.parentElement.dataset.tileNumber] = `${newDirection[rou]}tile`;
+                    console.log(mapLayout);
+
+                }
+            }
+        }
+        // below lines are not necessary anymore as there are not only one "forwardtile"
+        //selectorObj.imgcls = `fa-chevron-${newDirection[selectorObj.value]}`;
+        //selectorObj.value = newDirection[selectorObj.value]
     }
 };
 // place objects
@@ -170,4 +178,26 @@ function moveRight(tile) {
     }
 }
 
+
+// function for player forwarding tiles
+function placePlayerByTile(direction){
+    let tile = getTileNum();
+        switch(direction){
+            case "right":
+                tile += 1;
+                break;
+            case "left":
+                tile -= 1;
+                break;
+            case "down":
+                tile += 12;
+                break;
+            case "up":
+                tile -= 12;
+        }
+        setTimeout(function(){
+            replacePlayer(tile);
+            checkObjectBehavior()
+        }, 200)
+}
 placePlayer(1);
