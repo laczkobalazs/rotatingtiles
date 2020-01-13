@@ -1,3 +1,4 @@
+/*
 // create list of Nodes
 let tiles = document.querySelectorAll('[data-tile-number]');
 
@@ -7,6 +8,8 @@ for (tile of tiles){
     tileArray.push(tile.dataset.tileNumber)
 }
 
+ */
+
 // player text
 let playerText = `<i id="player" class="fab fa-accessible-icon fa-2x" ></i>`;
 
@@ -15,7 +18,7 @@ let mapLayoutLevel2 = {
     "85": "fixRightTile",
     "86": "fixRightTile",
     "87": "fixRightTile",
-    "88": "fixRightTile",
+    "88": "fixUpTile",
     "65": "fixRightTile",
     "66": "fixRightTile",
     "67": "fixRightTile",
@@ -32,11 +35,6 @@ let mapLayoutLevel2 = {
     "32": "fixLeftTile",
     "40": "fixLeftTile",
     "39": "fixLeftTile",
-    "37": "fixLeftTile",
-    "36": "fixLeftTile",
-    "48": "fixLeftTile",
-    "60": "fixLeftTile",
-    "72": "fixLeftTile",
     "28": "fixDownTile",
     "26": "rotater",
     "17": "rotater",
@@ -78,11 +76,11 @@ let mapObjects = {
     "righttile": {"value": "right", "imgcls": "fa-chevron-right"},
     "lefttile": {"value": "left", "imgcls": "fa-chevron-left"},
     "downtile": {"value": "down", "imgcls": "fa-chevron-down"},
-    "road": {"value": true, "imgcls": {"background" : "coral"}},
+    "road": {"value": true, "background": "coral"},
     "fixUpTile": {"value": "fixUp", "imgcls": "fa-long-arrow-alt-up"},
     "fixRightTile": {"value": "fixRight", "imgcls": "fa-long-arrow-alt-right"},
     "fixDownTile": {"value": "fixDown", "imgcls": "fa-long-arrow-alt-down"},
-    "fixLeftTile": {"value": "fixLeft", "imgcls": "falet tile;-long-arrow-alt-left"},
+    "fixLeftTile": {"value": "fixLeft", "imgcls": "fa-long-arrow-alt-left"},
 };
 
 
@@ -116,25 +114,30 @@ let objBehavior = {
         let newDirection = {"right": "down", "down": "left", "left": "up", "up": "right"};
         let rotaTiles = [];
         for(route in newDirection){
+            // select the mapObject right/left/up/downtile properties.
             let selectorObj = mapObjects[`${route}tile`];
+            // create a nodelist by the mapObjects property.
             let selectedObj = document.querySelectorAll(`.${selectorObj.imgcls}`);
+            // create an empty object (tempDic)
             let tempDic = {};
+            // set the actual direction as property, and the nodelist as its value.
             tempDic[route] = selectedObj;
+            // if nodelist is not empty them push it into the rotaTiles array.
             if (selectedObj.length > 0){
                 rotaTiles.push(tempDic)
             }
-
         }
+        // iterate through every {direction: object} pair.
         for (objectContainer of rotaTiles){
 
             for (rou in objectContainer){
+                // select the DOM elements and set new data to them.
                 selectorObj = mapObjects[`${rou}tile`];
                 for (let node of objectContainer[rou]){
                     console.log(node);
                     node.classList.remove(`${selectorObj.imgcls}`);
                     node.classList.add(`fa-chevron-${newDirection[rou]}`);
-                    mapLayout[node.parentElement.dataset.tileNumber] = `${newDirection[rou]}tile`;
-                    //levelOneLayout[node.parentElement.dataset.tileNumber] = `${newDirection[rou]}tile`;
+                    // mapLayout[node.parentElement.dataset.tileNumber] = `${newDirection[rou]}tile`;
                     console.log(mapLayout);
 
                 }
@@ -161,7 +164,7 @@ function placeObjects(objClass, tileNum){
 function placeRoad(array){
     for (let num of array){
         let placement = document.querySelector(`[data-tile-number="${num}"]`);
-        placement.setAttribute("style", `background:${mapObjects.road.imgcls.background}`)
+        placement.setAttribute("style", `background:${mapObjects.road.background}`)
     }
 }
 let paintMap = function(){
@@ -182,14 +185,6 @@ let paintMap = function(){
     placeRoad(levelOneRoadLayout);
     };
 
-//finish tile
-let finishTileText = '<i id="finish" class="fas fa-dungeon"></i>';
-
-//set finish tile
-function placeFinishTile(tile) {
-    let exitPosition = document.querySelector(`[data-tile-number="${tile}"]`);
-    exitPosition.insertAdjacentHTML("beforeend", finishTileText);
-}
 
 // player placement functions
 function placePlayer(tile){
@@ -245,12 +240,8 @@ function onkeyup(event) {
 function checkObjectBehavior(){
     try{
         let objName = mapLayout[getTileNum()];
-        //let objName = levelOneRoadLayout[getTileNum()];
         let value = mapObjects[objName].value;
         objBehavior[objName](value);
-        //console.log("key, value: ");
-        //console.log(objName);
-        //console.log(value);
     } catch {}
 }
 
@@ -320,7 +311,7 @@ function levelProgress() {
 
 function allowedToStep(tile){
     let placement = document.querySelector(`[data-tile-number="${tile}"]`);
-    return (placement.style.backgroundColor === mapObjects.road.imgcls.background)
+    return (placement.style.backgroundColor === mapObjects.road.background)
 }
 
 document.addEventListener("keyup", onkeyup);
